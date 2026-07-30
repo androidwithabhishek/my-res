@@ -1,179 +1,224 @@
-# 🧭 Navigation App
+# 🧭 Navigation in a Multi-Module Android App
 
-A modern Android application demonstrating a **scalable, modular, and type-safe navigation architecture** built with **Jetpack Compose**. This project showcases how to organize navigation professionally in large Android applications using feature modules and Clean Architecture principles.
+A minimal, practical example showing how to implement **type-safe Jetpack Compose Navigation** across multiple Gradle modules using **Hilt** for dependency injection — without any module depending directly on another feature module's internals.
+
+**Repo:** [androidwithabhishek/Navigation-In-Multimodule-Application-](https://github.com/androidwithabhishek/Navigation-In-Multimodule-Application-)
 
 ---
 
 ## 📱 Screenshots
 
-<div align="center">
-
-| Authentication | Dashboard |
-|:--------------:|:---------:|
-| <img src="https://raw.githubusercontent.com/androidwithabhishek/my-res/main/Screenshots/AuthScreen.jpeg" width="260" alt="Authentication Screen"/> | <img src="https://raw.githubusercontent.com/androidwithabhishek/my-res/main/Screenshots/DashboardScreen.jpeg" width="260" alt="Dashboard Screen"/> |
-
-</div>
+| Auth Screen | Dashboard Screen |
+|---|---|
+| ![Auth Screen](https://raw.githubusercontent.com/androidwithabhishek/my-res/main/multi_module_app/screenshots/auth_screen.jpeg) | ![Dashboard Screen](https://raw.githubusercontent.com/androidwithabhishek/my-res/main/multi_module_app/screenshots/dashboard_screen.jpeg) |
 
 ---
 
-## ✨ Features
+## 🏗️ Module Structure
 
-- 🔐 Authentication flow
-- 🏠 Dashboard navigation
-- 🧩 Multi-module architecture
-- 🛣️ Type-safe navigation
-- 📦 Feature-based navigation graphs
-- ⚡ Jetpack Compose UI
-- 🧼 Clean Architecture
-- ♻️ Reusable navigation APIs
-- 🎯 Scalable project structure
+```
+MultiModuleNavigation
+├── app                     # Hosts the single NavHost, wires everything together
+├── common                  # Shared navigation contracts (no feature knows about another feature)
+│   ├── SubGraph.kt
+│   ├── MainGraph.kt
+│   └── NavigationFeatureApi.kt
+└── feature
+    ├── auth                # Auth feature module (self-contained)
+    └── desboard            # Dashboard feature module (self-contained)
+```
+
+**Dependency direction:** `app → feature:*` and `feature:* → common`. Feature modules **never** depend on each other — they only know about `common`. This is the whole trick that keeps the graph scalable.
 
 ---
 
-## 🏗️ Architecture
+## 🧩 The Core Idea
 
-The project follows a modular architecture where each feature owns its own navigation graph and UI.
+Instead of one giant `NavHost` that knows about every screen in every feature, each feature module exposes a **contract** (`NavigationFeatureApi`) that says *"give me a NavHostController and a NavGraphBuilder, and I'll register my own destinations."* The `app` module just collects these contracts via Hilt and calls them.
 
-```
-app
-│
-├── core
-│   ├── navigation
-│   ├── common
-│   └── ui
-│
-├── feature-auth
-│
-├── feature-dashboard
-│
-└── feature-profile
+### 1. Shared contract (`common` module)
+
+```kotlin
+// common/NavigationFeatureApi.kt
+interface NavigationFeatureApi {
+    fun registerGraph(navHostController: NavHostController, navGraphBuilder: NavGraphBuilder)
+}
 ```
 
-This structure allows every feature to remain independent, reusable, and easier to maintain as the application grows.
+### 2. Type-safe destinations (`common` module)
+
+Using Kotlin Serialization instead of string routes:
+
+```kotlin
+// common/SubGraph.kt  -> top-level nested graphs
+sealed class SubGraph {
+    @Serializable data object Auth : SubGraph()
+    @Serializable data object DesBoard : SubGraph()
+}
+
+// common/MainGraph.kt -> actual screens inside those graphs
+sealed class MainGraph {
+    @Serializable data object AuthScreen : MainGraph()
+    @Serializable data object DesboardScreen : MainGraph()
+}
+```
+
+### 3. Each feature implements the contract for itself
+
+```kotlin
+// feature/auth/AuthNavigation.kt
+interface AuthNavigationFeatureApi : NavigationFeatureApi
+
+class AuthNavigationFeatureApiImpl : AuthNavigationFeatureApi {
+    override fun registerGraph(
+        navHostController: NavHostController,
+        navGraphBuilder: NavGraphBuilder,
+    ) {
+        navGraphBuilder.navigation<SubGraph.Auth>(startDestination = MainGraph.AuthScreen) {
+            composable<MainGraph.AuthScreen> {
+                AuthScreen(
+                    onBackClick = { navHostController.popBackStack() },
+                    onGoDesClick = { navHostController.navigate(MainGraph.DesboardScreen) }
+                )
+            }
+        }
+    }
+}
+```
+
+The Dashboard module mirrors the exact same pattern independently:
+
+```kotlin
+// feature/desboard/DesboardNavigation.kt
+class DesboardNavigationFeatureApiImpl : DesboardNavigationFeatureApi {
+    override fun registerGraph(
+        navHostController: NavHostController,
+        navGraphBuilder: NavGraphBuilder,
+    ) {
+        navGraphBuilder.navigation<SubGraph.DesBoard>(startDestination = MainGraph.DesboardScreen) {
+            composable<MainGraph.DesboardScreen> {
+                DashboardScreen(
+                    onBackClick = { navHostController.popBackStack() },
+                    onGoAuthClick = { navHostController.navigate(MainGraph.AuthScreen) }
+                )
+            }
+        }
+    }
+}
+```
+
+### 4. Hilt binds each implementation to its interface
+
+```kotlin
+// feature/auth/di/HiltModule.kt
+@InstallIn(SingletonComponent::class)
+@Module
+object HiltModule {
+    @Provides
+    @Singleton
+    fun providesAuthNavigationFeatureApi(): AuthNavigationFeatureApi =
+        AuthNavigationFeatureApiImpl()
+}
+```
+
+The `desboard` module has an identical Hilt module binding `DesboardNavigationFeatureApi`.
+
+### 5. `app` collects all feature APIs into one navigator
+
+```kotlin
+// app/ui/DefaultNavigator.kt
+data class DefaultNavigator(
+    val authNavigationFeatureApi: AuthNavigationFeatureApi,
+    val desboardNavigationFeatureApi: DesboardNavigationFeatureApi,
+)
+
+// app/di/HiltModule.kt
+@Provides
+fun providesDefaultNavigator(
+    authNavigationFeatureApi: AuthNavigationFeatureApi,
+    desboardNavigationFeatureApi: DesboardNavigationFeatureApi,
+): DefaultNavigator = DefaultNavigator(authNavigationFeatureApi, desboardNavigationFeatureApi)
+```
+
+### 6. `MainActivity` builds the single `NavHost`
+
+```kotlin
+// app/MainActivity.kt
+@AndroidEntryPoint
+class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var defaultNavigator: DefaultNavigator
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MultiModuleNavigationTheme {
+                val navController = rememberNavController()
+                MainNavigation(
+                    navHostController = navController,
+                    defaultNavigator = defaultNavigator
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun MainNavigation(
+    modifier: Modifier = Modifier,
+    navHostController: NavHostController,
+    defaultNavigator: DefaultNavigator,
+) {
+    NavHost(navHostController, startDestination = SubGraph.Auth) {
+        defaultNavigator.authNavigationFeatureApi.registerGraph(navHostController, this)
+        defaultNavigator.desboardNavigationFeatureApi.registerGraph(navHostController, this)
+    }
+}
+```
+
+Notice `app` **never imports `AuthScreen` or `DashboardScreen` directly** — it only depends on the `*NavigationFeatureApi` interfaces from `common`, and Hilt supplies the concrete implementations at runtime.
 
 ---
 
-## 🚀 Navigation Flow
+## ⚙️ Module Wiring (`settings.gradle.kts`)
 
-```
-App
- │
- ▼
-Authentication
- │
- ▼
-Dashboard
- │
- ├── Profile
- ├── Settings
- └── More Features
+```kotlin
+rootProject.name = "MultiModuleNavigation"
+include(":app")
+include(":common")
+include(":feature:auth")
+include(":feature:desboard")
 ```
 
-Each feature registers its own navigation graph instead of placing every destination inside a single `NavHost`.
+Dependencies in `app/build.gradle.kts`:
+
+```kotlin
+dependencies {
+    implementation(project(":common"))
+    implementation(project(":feature:desboard"))
+    implementation(project(":feature:auth"))
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+}
+```
 
 ---
 
-## 💡 Why This Architecture?
+## ✅ Why this pattern is worth using
 
-Instead of keeping all screens inside one navigation graph, every feature exposes its own navigation API.
-
-Benefits include:
-
-- Better scalability
-- Easier maintenance
-- Feature isolation
-- Cleaner dependencies
-- Improved readability
-- Faster development for large teams
-
-This approach is commonly used in production Android applications with multiple modules.
+- **Decoupled features** – `auth` and `desboard` have zero compile-time knowledge of each other.
+- **Type-safe navigation** – routes are `@Serializable` sealed classes, not error-prone string literals.
+- **Scales cleanly** – adding a new feature module means: add a `NavigationFeatureApi`, implement it, bind it with Hilt, plug it into `DefaultNavigator`. No changes needed inside other features.
+- **Single source of truth for the graph** – `app` owns the one and only `NavHost`, while each feature owns its own sub-graph and screens.
 
 ---
 
 ## 🛠️ Tech Stack
 
-- Kotlin
-- Jetpack Compose
-- Navigation Compose
-- Kotlin Serialization
-- MVVM
-- Clean Architecture
-- Multi Module
-- Material 3
-- Coroutines
-- StateFlow
-
----
-
-## 📂 Project Structure
-
-```
-📦 app
-📦 core
- ├── navigation
- ├── common
- └── ui
-
-📦 feature-auth
- ├── api
- ├── impl
- └── presentation
-
-📦 feature-dashboard
- ├── api
- ├── impl
- └── presentation
-```
-
----
-
-## 🎯 Learning Goals
-
-This project demonstrates:
-
-- Professional navigation architecture
-- Multi-module application development
-- Feature-based navigation
-- Type-safe routes
-- Separation of concerns
-- Clean project organization
-
----
-
-## 🚀 Getting Started
-
-1. Clone the repository
-
-```bash
-git clone <YOUR_REPO_LINK>
-```
-
-2. Open the project in Android Studio.
-
-3. Sync Gradle.
-
-4. Run the application on an emulator or physical device.
-
----
-
-## 📸 Preview
-
-Authentication Screen
-
-<img src="https://raw.githubusercontent.com/androidwithabhishek/my-res/main/Screenshots/AuthScreen.jpeg" width="300"/>
-
-Dashboard Screen
-
-<img src="https://raw.githubusercontent.com/androidwithabhishek/my-res/main/Screenshots/DashboardScreen.jpeg" width="300"/>
-
----
-
-## 🤝 Contributions
-
-Contributions, suggestions, and improvements are always welcome. Feel free to fork the repository and open a pull request.
-
----
-
-## ⭐ Support
-
-If you found this project helpful, consider giving it a ⭐ on GitHub. It helps others discover the project and motivates further improvements.
+- Kotlin + Jetpack Compose
+- Navigation Compose (type-safe routes via `kotlinx.serialization`)
+- Dagger Hilt (multi-module DI)
+- Gradle multi-module setup (`app`, `common`, `feature:auth`, `feature:desboard`)
