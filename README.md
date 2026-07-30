@@ -1,3 +1,55 @@
+# 🧭 Navigation App
+
+A modern Android application demonstrating a **scalable, modular, and type-safe navigation architecture** built with **Jetpack Compose**. This project showcases how to organize navigation professionally in large Android applications using feature modules and Clean Architecture principles.
+
+---
+
+## 📱 Screenshots
+
+<div align="center">
+
+| Authentication | Dashboard |
+|:--------------:|:---------:|
+| <img src="https://raw.githubusercontent.com/androidwithabhishek/my-res/main/Screenshots/AuthScreen.jpeg" width="260" alt="Authentication Screen"/> | <img src="https://raw.githubusercontent.com/androidwithabhishek/my-res/main/Screenshots/DashboardScreen.jpeg" width="260" alt="Dashboard Screen"/> |
+
+</div>
+
+---
+
+## ✨ Features
+
+- 🔐 Authentication flow
+- 🏠 Dashboard navigation
+- 🧩 Multi-module architecture
+- 🛣️ Type-safe navigation
+- 📦 Feature-based navigation graphs
+- ⚡ Jetpack Compose UI
+- 🧼 Clean Architecture
+- ♻️ Reusable navigation APIs
+- 🎯 Scalable project structure
+
+---
+
+## 🏗️ Architecture
+
+The project follows a modular architecture where each feature owns its own navigation graph and UI.
+
+```
+app
+│
+├── core
+│   ├── navigation
+│   ├── common
+│   └── ui
+│
+├── feature-auth
+│
+├── feature-dashboard
+│
+└── feature-profile
+```
+
+This structure allows every feature to remain independent, reusable, and easier to maintain as the application grows.
 
 ---
 
@@ -125,7 +177,3 @@ Contributions, suggestions, and improvements are always welcome. Feel free to fo
 ## ⭐ Support
 
 If you found this project helpful, consider giving it a ⭐ on GitHub. It helps others discover the project and motivates further improvements.
-This style is similar to the polished READMEs you see on popular Android GitHub projects: it has a clean header, side-by-side screenshots, a clear architecture explanation, project structure, tech stack, and a professional layout without being overly verbose.
-
-
-
