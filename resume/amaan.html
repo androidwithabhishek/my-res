@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mohammad Amaan - Resume</title>
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html, body {
+    width: 210mm;
+    height: 297mm;
+    font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+    color: #1f2937;
+    font-size: 11.5px;
+    line-height: 1.4;
+    background: #fff;
+  }
+
+  .page {
+    width: 210mm;
+    height: 297mm;
+    padding: 12mm 14mm;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Header */
+  header {
+    border-bottom: 2px solid #0f4c81;
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+  }
+
+  header h1 {
+    font-size: 26px;
+    letter-spacing: 0.5px;
+    color: #0f4c81;
+    font-weight: 700;
+  }
+
+  header .title {
+    font-size: 13px;
+    color: #374151;
+    font-weight: 600;
+    margin-top: 2px;
+    letter-spacing: 0.3px;
+  }
+
+  .contact-row {
+    margin-top: 8px;
+    font-size: 10.8px;
+    color: #374151;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+  }
+
+  .contact-row .item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .contact-row .icon {
+    flex-shrink: 0;
+    width: 12px;
+    height: 12px;
+    fill: none;
+    stroke: #0f4c81;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .contact-row .icon.filled {
+    fill: #0f4c81;
+    stroke: none;
+  }
+
+  .contact-row a {
+    color: #1f2937;
+    text-decoration: none;
+  }
+
+  .contact-row a:hover {
+    text-decoration: underline;
+    color: #0f4c81;
+  }
+
+  /* Section Titles */
+  h2.section-title {
+    font-size: 12.5px;
+    color: #0f4c81;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 700;
+    border-bottom: 1px solid #cbd5e1;
+    padding-bottom: 3px;
+    margin-bottom: 6px;
+    margin-top: 10px;
+  }
+
+  section:first-of-type h2.section-title {
+    margin-top: 0;
+  }
+
+  /* Summary */
+  .summary {
+    font-size: 11.2px;
+    color: #1f2937;
+    text-align: justify;
+    line-height: 1.42;
+  }
+
+  /* Experience */
+  .job {
+    margin-bottom: 8px;
+  }
+
+  .job:last-child {
+    margin-bottom: 0;
+  }
+
+  .job-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 2px;
+  }
+
+  .job-header .company {
+    font-weight: 700;
+    font-size: 11.8px;
+    color: #111827;
+  }
+
+  .job-header .dates {
+    font-size: 10.5px;
+    color: #4b5563;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .job-role {
+    font-size: 11px;
+    font-style: italic;
+    color: #374151;
+    margin-bottom: 4px;
+  }
+
+  ul.bullets {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  ul.bullets li {
+    position: relative;
+    padding-left: 11px;
+    margin-bottom: 3px;
+    font-size: 10.9px;
+    line-height: 1.38;
+    text-align: justify;
+  }
+
+  ul.bullets li::before {
+    content: "\2022";
+    position: absolute;
+    left: 0;
+    color: #0f4c81;
+    font-weight: 700;
+  }
+
+  /* Two Column Lower Section */
+  .lower-grid {
+    display: flex;
+    gap: 16px;
+    margin-top: 2px;
+  }
+
+  .lower-grid .col {
+    flex: 1;
+  }
+
+  /* Education */
+  .edu-item {
+    margin-bottom: 5px;
+  }
+
+  .edu-item .deg {
+    font-weight: 700;
+    font-size: 11px;
+    color: #111827;
+  }
+
+  .edu-item .meta {
+    font-size: 10.5px;
+    color: #4b5563;
+  }
+
+  /* Skills */
+  .skills-block {
+    margin-bottom: 6px;
+  }
+
+  .skills-block:last-child {
+    margin-bottom: 0;
+  }
+
+  .skills-block .skills-label {
+    font-size: 10.8px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 2px;
+  }
+
+  .skills-block .skills-text {
+    font-size: 10.9px;
+    color: #374151;
+    text-align: justify;
+    line-height: 1.4;
+  }
+
+  /* Declaration */
+  .declaration {
+    font-size: 10.7px;
+    color: #374151;
+    text-align: justify;
+  }
+
+  @media print {
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    html, body {
+      width: 210mm;
+      height: 297mm;
+    }
+
+    .page {
+      width: 210mm;
+      height: 297mm;
+      padding: 12mm 14mm;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+  <!-- ================= HEADER ================= -->
+
+  <header>
+
+    <h1>Mohammad Amaan</h1>
+
+    <div class="title">
+      Air Cargo Operations Professional
+    </div>
+
+    <div class="contact-row">
+
+      <!-- Phone -->
+      <span class="item">
+        <svg class="icon"
+             viewBox="0 0 24 24"
+             xmlns="http://www.w3.org/2000/svg">
+
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2
+                   19.79 19.79 0 0 1-8.63-3.07
+                   19.5 19.5 0 0 1-6-6
+                   19.79 19.79 0 0 1-3.07-8.67
+                   A2 2 0 0 1 4.11 2h3
+                   a2 2 0 0 1 2 1.72
+                   c.13.96.36 1.9.7 2.81
+                   a2 2 0 0 1-.45 2.11L8.09 9.91
+                   a16 16 0 0 0 6 6l1.27-1.27
+                   a2 2 0 0 1 2.11-.45
+                   c.91.34 1.85.57 2.81.7
+                   A2 2 0 0 1 22 16.92z"/>
+        </svg>
+
+        <a href="tel:+918630735147">
+          +91 8630735147
+        </a>
+      </span>
+
+
+      <!-- Email -->
+      <span class="item">
+
+        <svg class="icon"
+             viewBox="0 0 24 24"
+             xmlns="http://www.w3.org/2000/svg">
+
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12
+                   c0 1.1-.9 2-2 2H4
+                   c-1.1 0-2-.9-2-2V6
+                   c0-1.1.9-2 2-2z"/>
+
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+
+        <a href="mailto:mamaan6947@gmail.com">
+          mamaan6947@gmail.com
+        </a>
+
+      </span>
+
+
+      <!-- LinkedIn -->
+      <span class="item">
+
+        <svg class="icon filled"
+             viewBox="0 0 24 24"
+             xmlns="http://www.w3.org/2000/svg">
+
+          <path d="M20.45 20.45h-3.55v-5.57
+                   c0-1.33-.03-3.04-1.85-3.04
+                   -1.85 0-2.14 1.45-2.14 2.94v5.67
+                   H9.36V9h3.41v1.56h.05
+                   c.48-.9 1.64-1.85 3.37-1.85
+                   3.6 0 4.27 2.37 4.27 5.46v6.28z
+                   M5.34 7.43a2.06 2.06 0 1 1
+                   0-4.12 2.06 2.06 0 0 1 0 4.12z
+                   M7.12 20.45H3.56V9h3.56v11.45z"/>
+        </svg>
+
+        <a href="https://www.linkedin.com/in/mohd-amaan-b30b06307/"
+           target="_blank">
+
+          linkedin.com/in/mohd-amaan-b30b06307
+
+        </a>
+
+      </span>
+
+
+      <!-- Location -->
+      <span class="item">
+
+        <svg class="icon"
+             viewBox="0 0 24 24"
+             xmlns="http://www.w3.org/2000/svg">
+
+          <path d="M21 10c0 7-9 13-9 13
+                   S3 17 3 10a9 9 0 0 1 18 0z"/>
+
+          <circle cx="12" cy="10" r="3"/>
+
+        </svg>
+
+        H. No. 46, Mahipalpur, New Delhi &ndash; 110037, India
+
+      </span>
+
+    </div>
+
+  </header>
+
+
+  <!-- ================= PROFESSIONAL SUMMARY ================= -->
+
+  <section>
+
+    <h2 class="section-title">
+      Professional Summary
+    </h2>
+
+    <p class="summary">
+      Air Cargo Operations professional with hands-on experience since
+      December 2023 at Delhi Cargo Service Centre Pvt. Ltd., serving
+      Emirates Airlines at IGI Airport, New Delhi, along with customer
+      care and sales experience since October 2023 at Pacific Mall,
+      Dwarka. Experienced in export and import cargo operations,
+      shipment planning, flight operations coordination, cargo
+      documentation and manifestation, load planning, ULD management,
+      special cargo handling, airline and GHA coordination, customer
+      coordination, and operational reporting. Skilled in customer
+      service, communication, teamwork, problem-solving, and day-to-day
+      operational coordination, with working knowledge of Emirates
+      SkyCargo's Future Sky Chain system. A dedicated and adaptable
+      professional with practical experience across cargo operations
+      and customer service, willing to continuously learn new skills,
+      take on greater responsibilities, and grow professionally
+      throughout my career.
+    </p>
+
+  </section>
+
+
+  <!-- ================= PROFESSIONAL EXPERIENCE ================= -->
+
+  <section>
+
+    <h2 class="section-title">
+      Professional Experience
+    </h2>
+
+
+    <!-- Delhi Cargo Service Centre -->
+
+    <div class="job">
+
+      <div class="job-header">
+
+        <span class="company">
+          Delhi Cargo Service Centre Pvt. Ltd.
+        </span>
+
+        <span class="dates">
+          December 2023 &ndash; Present
+        </span>
+
+      </div>
+
+      <div class="job-role">
+        Cargo Assistant &mdash; Serving Emirates Airlines |
+        IGI Airport, New Delhi
+      </div>
+
+      <ul class="bullets">
+
+        <li>
+          Manage export cargo flight operations, shipment planning,
+          and cargo space verification for offloaded or rerouted
+          shipments in coordination with airline, warehouse and GHA teams.
+        </li>
+
+        <li>
+          Handle cargo documentation, manifestation, pre-alert
+          communication, load planning, and ULD stock monitoring
+          in line with airline safety requirements.
+        </li>
+
+        <li>
+          Process special cargo including VAL, AVI, HUM and VUN,
+          preparing required special-handling documentation and reports.
+        </li>
+
+        <li>
+          Prepare daily, weekly and monthly operational reports,
+          including TD and acceptance reports, and coordinate customer
+          clearance and documentation needs.
+        </li>
+
+        <li>
+          Manage import operations including Delivery Order preparation,
+          IRP and OK-to-forward processing, cash-collection reports,
+          and customer notification of cargo arrival.
+        </li>
+
+        <li>
+          Work with Emirates SkyCargo systems, including Future Sky Chain,
+          to support day-to-day export and import cargo activities.
+        </li>
+
+      </ul>
+
+    </div>
+
+
+    <!-- Pacific Mall -->
+
+    <div class="job">
+
+      <div class="job-header">
+
+        <span class="company">
+          Pacific Mall, Dwarka
+        </span>
+
+        <span class="dates">
+          October 2023 &ndash; Present
+        </span>
+
+      </div>
+
+      <div class="job-role">
+        Customer Care / Sales Associate | Dwarka, New Delhi
+      </div>
+
+      <ul class="bullets">
+
+        <li>
+          Assisted and guided customers in selecting products based
+          on their requirements and preferences.
+        </li>
+
+        <li>
+          Interacted with customers, understood their needs, and
+          provided helpful product information.
+        </li>
+
+        <li>
+          Supported the sales process by engaging with customers
+          and assisting them with product selection.
+        </li>
+
+        <li>
+          Handled customer queries and helped ensure a friendly
+          and satisfactory shopping experience.
+        </li>
+
+        <li>
+          Developed strong communication, customer-handling,
+          teamwork, and problem-solving skills.
+        </li>
+
+      </ul>
+
+    </div>
+
+  </section>
+
+
+  <!-- ================= EDUCATION & TRAINING ================= -->
+
+  <section>
+
+    <h2 class="section-title">
+      Education &amp; Training
+    </h2>
+
+    <div class="lower-grid">
+
+      <div class="col">
+
+        <div class="edu-item">
+
+          <div class="deg">
+            FOA Course
+          </div>
+
+          <div class="meta">
+            GMRVF, Delhi | 2023
+          </div>
+
+        </div>
+
+
+        <div class="edu-item">
+
+          <div class="deg">
+            Certified ITI (Fitter) Diploma
+          </div>
+
+          <div class="meta">
+            Grade A
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="col">
+
+        <div class="edu-item">
+
+          <div class="deg">
+            B.A.
+          </div>
+
+          <div class="meta">
+            MJPRU, Bareilly | 2023
+          </div>
+
+        </div>
+
+
+        <div class="edu-item">
+
+          <div class="deg">
+            12th &mdash; UP Board, Allahabad
+          </div>
+
+          <div class="meta">
+            71.4% | Subject: Mathematics | 2020
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ================= SKILLS ================= -->
+
+  <section>
+
+    <h2 class="section-title">
+      Skills
+    </h2>
+
+
+    <div class="skills-block">
+
+      <div class="skills-label">
+        Core Competencies
+      </div>
+
+      <p class="skills-text">
+        Export &amp; Import Cargo Operations, Shipment Planning,
+        Flight Operations Coordination, Cargo Manifestation,
+        Load Planning, ULD Management, Shipment Tracking,
+        Special Cargo Handling (VAL, AVI, HUM, VUN),
+        Airline &amp; GHA Coordination, Warehouse Coordination,
+        Customer Coordination, Customs &amp; Documentation,
+        Customer Service, Sales Support, Customer Handling,
+        Communication, Teamwork &amp; Problem-Solving
+      </p>
+
+    </div>
+
+
+    <div class="skills-block">
+
+      <div class="skills-label">
+        Technical Skills
+      </div>
+
+      <p class="skills-text">
+        Emirates SkyCargo &ndash; Future Sky Chain,
+        Cargo Documentation Systems, MS Excel, MS Word,
+        MS Office, Report Preparation &amp; Data Entry
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <!-- ================= DECLARATION ================= -->
+
+  <section>
+
+    <h2 class="section-title">
+      Declaration
+    </h2>
+
+    <p class="declaration">
+      I hereby declare that the information provided above is true and
+      correct to the best of my knowledge and belief.
+    </p>
+
+  </section>
+
+
+</div>
+
+</body>
+</html>
